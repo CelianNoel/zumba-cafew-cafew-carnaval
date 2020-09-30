@@ -30,3 +30,5 @@ A video game with three.js
 - [X] : As a player, I want to decrease my life when I am touch by an ennemy
 - [ ] : As a player, I want to decrease my life when I fall 
 - [X] : As a player, I want that the enemy can shoot
+
+Note : 70/100
