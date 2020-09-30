@@ -51,8 +51,8 @@ Player.prototype.displayInfo = function () {
 }
 
 Player.prototype.turnRight = function (angle) {
-    this.direction += angle;
-    this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), +angle);
+    this.direction -= angle;
+    this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), -angle);
 };
 
 Player.prototype.turnLeft = function (angle) {
@@ -79,7 +79,68 @@ Player.prototype.move = function () {
     this.graphic.position.x = this.position.x;
     this.graphic.position.y = this.position.y;
     
-    light1.position.x = this.position.x;
-    light1.position.y = this.position.y;
+    
    //light1.position.z = this.graphic.position.z + 500;
 };
+
+Player.prototype.enemyMove = function () {
+    this.speed = 1 ;
+    var moveTo = new THREE.Vector3(
+        this.speed * Math.cos(this.direction) + this.position.x,
+        this.speed * Math.sin(this.direction) + this.position.y,
+        this.graphic.position.z
+    );
+    
+    this.position = moveTo;
+    this.graphic.position.x = this.position.x;
+    this.graphic.position.y = this.position.y;
+
+    var x = this.graphic.position.x + WIDTH / 2;
+    var y = this.graphic.position.y + HEIGHT / 2;
+
+    angle = 180;
+    if ( x > WIDTH )
+    {
+        this.direction += angle;
+        this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), angle);
+    }
+    if ( x < 0 )
+    {
+        this.direction += angle;
+        this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), angle);
+    }
+    if ( y < 0 )
+    {
+        this.direction += angle;
+        this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), angle);
+    }
+    if ( y > HEIGHT )
+    {
+        this.direction += angle;
+        this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), angle);
+    }
+
+    if (keyboard.pressed("space") && bulletTime1 + 0.8 < clock.getElapsedTime())
+    {
+        bullet = new THREE.Mesh(
+            new THREE.SphereGeometry(2),
+            bullet_player1_material);
+        scene.add(bullet);
+        bullet.position.x = player1.graphic.position.x + 7.5 * Math.cos(player1.direction);
+        bullet.position.y = player1.graphic.position.y + 7.5 * Math.sin(player1.direction);
+        bullet.angle = player1.direction;
+        player1.bullets.push(bullet);
+        bulletTime1 = clock.getElapsedTime();
+    } 
+
+    // move bullets
+    var moveDistance = 5;
+
+    for (var i = 0; i < player1.bullets.length; i++)
+    {
+        player1.bullets[i].position.x += moveDistance * Math.cos(player1.bullets[i].angle);
+        player1.bullets[i].position.y += moveDistance * Math.sin(player1.bullets[i].angle);
+    }
+};
+
+
